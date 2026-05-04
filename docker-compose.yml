@@ -1,0 +1,26 @@
+services:
+  tracker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: trcont-tracker:latest
+    container_name: trcont-tracker
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      STATE_DIR: /app/state
+      TZ: Europe/Moscow
+      # Playwright Chromium headless (true) or headed (false) inside the container.
+      HEADLESS: "true"
+      # After a visible SmartCaptcha challenge: restart browser, wait, one retry.
+      CAPTCHA_BACKOFF_S: "300"
+    volumes:
+      - ./state:/app/state
+    mem_limit: 1g
+    shm_size: 1gb
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"

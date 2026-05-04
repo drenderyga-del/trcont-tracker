@@ -1,0 +1,10 @@
+.git
+.gitignore
+.env
+state/
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+*.har
+README.md

@@ -1,0 +1,11 @@
+.env
+state/
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+*.har
+*.log
+*.tmp
+playwright-report/
+test-results/
