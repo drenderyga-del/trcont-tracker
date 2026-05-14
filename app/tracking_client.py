@@ -120,7 +120,11 @@ class TrackingClient:
                 "Chrome/131.0.0.0 Safari/537.36"
             ),
         )
-        await self._open_tracking_page_atomic()
+        # Do not open the tracking tab here: SmartCaptcha may block #search for
+        # minutes and would crash the whole process on container start. The tab
+        # is opened lazily from ``fetch`` via ``_ensure_page`` (with retries).
+        self._page = None
+        logger.info("Playwright ready; tracking page opens on first fetch")
 
     async def close(self) -> None:
         if self._page is not None:
