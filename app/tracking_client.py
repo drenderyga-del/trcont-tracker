@@ -78,12 +78,14 @@ class TrackingClient:
         nav_timeout_ms: int = 60_000,
         search_timeout_ms: int = 60_000,
         pre_click_delay_ms: int = 500,
+        search_unlock_budget_s: float = 180.0,
     ) -> None:
         self.state_dir = state_dir  # reserved for debug dumps / future use
         self.headless = headless
         self.nav_timeout_ms = nav_timeout_ms
         self.search_timeout_ms = search_timeout_ms
         self.pre_click_delay_ms = pre_click_delay_ms
+        self.search_unlock_budget_s = search_unlock_budget_s
 
         self._pw = None
         self._browser = None
@@ -196,7 +198,10 @@ class TrackingClient:
             state="attached",
             timeout=self.nav_timeout_ms,
         )
-        budget_s = max(120.0, self.search_timeout_ms / 1000.0)
+        budget_s = max(
+            self.search_unlock_budget_s,
+            self.search_timeout_ms / 1000.0,
+        )
         deadline = time.monotonic() + budget_s
         while time.monotonic() < deadline:
             loc = page.locator("input#search:not([disabled])").first

@@ -39,6 +39,8 @@ class Config:
 
     nav_timeout_ms: int = 60000
     search_timeout_ms: int = 60000
+    # Max seconds to wait for #search to unlock (SmartCaptcha precheck); raise on DC IPs.
+    search_unlock_budget_s: float = 180.0
     fetch_attempts: int = 4
     captcha_retry_delay_s: float = 1.5
     pre_click_delay_ms: int = 500
@@ -87,6 +89,13 @@ def load_config() -> Config:
         send_startup_message=_bool(os.environ.get("SEND_STARTUP_MESSAGE")),
         nav_timeout_ms=int(os.environ.get("NAV_TIMEOUT_MS", "60000")),
         search_timeout_ms=int(os.environ.get("SEARCH_TIMEOUT_MS", "60000")),
+        search_unlock_budget_s=max(
+            30.0,
+            min(
+                float(os.environ.get("SEARCH_UNLOCK_BUDGET_S", "180")),
+                900.0,
+            ),
+        ),
         fetch_attempts=int(os.environ.get("FETCH_ATTEMPTS", "4")),
         captcha_retry_delay_s=float(os.environ.get("CAPTCHA_RETRY_DELAY_S", "1.5")),
         captcha_backoff_s=float(os.environ.get("CAPTCHA_BACKOFF_S", "300")),
